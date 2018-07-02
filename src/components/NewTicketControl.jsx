@@ -1,35 +1,44 @@
 import React from 'react';
-import ConfirmationQuestions from './ConfirmationQuestions';
-import NewTicketForm from './NewTicketForm';
+import PropTypes from 'prop-types';
 
-class NewTicketControl extends React.Component {
+function NewTicketForm(props){
+  let _names = null;
+  let _location = null;
+  let _issue = null;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      formVisibleOnPage: false
-    };
-    this.handleTroubleshootingConfirmation = this.handleTroubleshootingConfirmation.bind(this);
+  function handleNewTicketFormSubmission(event) {
+    event.preventDefault();
+    props.onNewTicketCreation({names: _names.value, location: _location.value, issue: _issue.value});
+    _names.value = '';
+    _location.value = '';
+    _issue.value = '';
   }
 
-  handleTroubleshootingConfirmation() {
-    this.setState({formVisibleOnPage: true});
-  }
-
-  render() {
-    let currentlyVisible = null;
-    if (this.state.formVisibleOnPage) {
-      currentlyVisible = <NewTicketForm/>;
-    } else {
-      currentlyVisible = <ConfirmationQuestions onTroubleshootingConfirmation={this.handleTroubleshootingConfirmation} />;
-    }
-
-    return(
-      <div>
-        {currentlyVisible}
-      </div>
-    );
-  }
+  return (
+    <div>
+      <form onSubmit={handleNewTicketFormSubmission}>
+        <input
+          type='text'
+          id='names'
+          placeholder='Pair Names'
+          ref={(input) => {_names = input;}}/>
+        <input
+          type='text'
+          id='location'
+          placeholder='Location'
+          ref={(input) => {_location = input;}}/>
+        <textarea
+          id='issue'
+          placeholder='Describe your issue.'
+          ref={(textarea) => {_issue = textarea;}}/>
+        <button type='submit'>Help!</button>
+      </form>
+    </div>
+  );
 }
 
-export default NewTicketControl;
+NewTicketForm.propTypes = {
+  onNewTicketCreation: PropTypes.func
+};
+
+export default NewTicketForm;
